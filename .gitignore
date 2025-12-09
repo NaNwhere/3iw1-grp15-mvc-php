@@ -1,0 +1,30 @@
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+
+# Environment variables
+.env
+
+# Composer
+*/vendor/
+composer.lock
+
+# PHPUnit
+phpunit.xml
+.phpunit.result.cache
+
+# Logs
+/logs/
+*.log
+
+/www/public/uploads/*
+!/www/public/uploads/.gitkeep
