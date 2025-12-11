@@ -41,4 +41,27 @@ class Page extends Model
             'content' => $data['content']
         ]);
     }
+    
+    public function findAllWithAuthor()
+    {
+        $sql = "SELECT p.*, u.firstname, u.lastname FROM {$this->table} p LEFT JOIN users u ON p.user_id = u.id";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll();
+    }
+
+    public function findByAuthor($userId)
+    {
+        $sql = "SELECT p.*, u.firstname, u.lastname FROM {$this->table} p LEFT JOIN users u ON p.user_id = u.id WHERE p.user_id = :user_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['user_id' => $userId]);
+        return $stmt->fetchAll();
+    }
+
+    public function findBySlugWithAuthor($slug)
+    {
+        $sql = "SELECT p.*, u.firstname, u.lastname FROM {$this->table} p LEFT JOIN users u ON p.user_id = u.id WHERE p.slug = :slug";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['slug' => $slug]);
+        return $stmt->fetch();
+    }
 }

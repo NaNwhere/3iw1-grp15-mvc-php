@@ -12,7 +12,7 @@ class PageController extends Controller
 
     public function __construct()
     {
-        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
+        if (!isset($_SESSION['user'])) {
             $this->redirect('/login');
         }
     }
@@ -20,7 +20,11 @@ class PageController extends Controller
     public function index()
     {
         $pageModel = new Page();
-        $pages = $pageModel->findAll();
+        if ($_SESSION['user']['role'] === 'admin') {
+            $pages = $pageModel->findAllWithAuthor();
+        } else {
+            $pages = $pageModel->findByAuthor($_SESSION['user']['id']);
+        }
         $this->render('Admin/Pages/index', ['pages' => $pages]);
     }
 
@@ -34,13 +38,17 @@ class PageController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $data = $_POST;
-            
+            $data['slug'] = str_replace(' ', '-', $data['slug']);
+            $data['slug'] = urlencode($data['slug']);
             $validator = new Validator($data);
             $validator->required('title');
             $validator->min('title', 3);
             $validator->required('slug');
             $validator->min('slug', 3);
             $validator->unique('slug', 'pages', 'slug');
+            if (strlen($data['slug']) > 100) {
+                $validator->addError('slug', "Le slug ne doit pas dépasser 100 caractères.");
+            }
             $validator->required('content');
 
             if (!empty($validator->errors())) {
@@ -49,8 +57,8 @@ class PageController extends Controller
             }
 
             $allowed_tags = '<p><br><strong><em><ul><ol><li><a><img><div><span><table><tr><td><th><blockquote><code><pre>';
-            strip_tags($data['content'], $allowed_tags);
-
+            $data['content'] = strip_tags($data['content'], $allowed_tags);
+            $data['user_id'] = $_SESSION['user']['id'];
 
             $pageModel = new Page();
             if ($pageModel->create($data)) {
@@ -65,6 +73,15 @@ class PageController extends Controller
     {
         $pageModel = new Page();
         $page = $pageModel->find($id);
+
+        if (!$page) {
+            $this->redirect('/admin/pages');
+        }
+
+        if ($_SESSION['user']['role'] !== 'admin' && $page['user_id'] !== $_SESSION['user']['id']) {
+            $this->redirect('/admin/pages');
+        }
+
         $this->render('Admin/Pages/edit', ['page' => $page]);
     }
 
@@ -73,13 +90,17 @@ class PageController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $data = $_POST;
-
+            $data['slug'] = str_replace(' ', '-', $data['slug']);
+            $data['slug'] = urlencode($data['slug']);
             $validator = new Validator($data);
             $validator->required('title');
             $validator->min('title', 3);
             $validator->required('slug');
             $validator->min('slug', 3);
             $validator->unique('slug', 'pages', 'slug', $id);
+            if (strlen($data['slug']) > 100) {
+                $validator->addError('slug', "Le slug ne doit pas dépasser 100 caractères.");
+            }
             $validator->required('content');
 
             if (!empty($validator->errors())) {
@@ -88,7 +109,21 @@ class PageController extends Controller
                 return;
             }
 
+            $allowed_tags = '<p><br><strong><em><ul><ol><li><a><img><div><span><table><tr><td><th><blockquote><code><pre>';
+            $data['content'] = strip_tags($data['content'], $allowed_tags);
+            $data['user_id'] = $_SESSION['user']['id'];
+
             $pageModel = new Page();
+            $page = $pageModel->find($id);
+
+            if (!$page) {
+                $this->redirect('/admin/pages');
+            }
+    
+            if ($_SESSION['user']['role'] !== 'admin' && $page['user_id'] !== $_SESSION['user']['id']) {
+                die("Action non autorisée");
+            }
+
             if ($pageModel->update($id, $data)) {
                 $this->redirect('/admin/pages');
             } else {
@@ -100,7 +135,14 @@ class PageController extends Controller
     public function delete($id)
     {
         $pageModel = new Page();
-        $pageModel->delete($id);
+        $page = $pageModel->find($id);
+
+        if ($page) {
+            if ($_SESSION['user']['role'] === 'admin' || $page['user_id'] === $_SESSION['user']['id']) {
+                $pageModel->delete($id);
+            }
+        }
+        
         $this->redirect('/admin/pages');
     }
 }

@@ -8,7 +8,6 @@ class MainController extends Controller
 {
     public function home()
     {
-        // Récupérer la page d'accueil depuis la BDD si elle existe, sinon afficher une vue par défaut
         $pageModel = new Page();
         $page = $pageModel->findBy('slug', 'home');
 
@@ -22,7 +21,7 @@ class MainController extends Controller
     public function page($slug)
     {
         $pageModel = new Page();
-        $page = $pageModel->findBy('slug', $slug);
+        $page = $pageModel->findBySlugWithAuthor($slug);
 
         if (!$page) {
             http_response_code(404);

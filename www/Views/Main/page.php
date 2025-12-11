@@ -3,6 +3,8 @@
         <h1 class="text-3xl font-bold text-gray-900"><?= htmlspecialchars($page['title']) ?></h1>
         <p class="mt-2 text-sm text-gray-500">
             Publié le <?= date('d/m/Y', strtotime($page['created_at'])) ?>
+            <br>
+            Publié par <?= htmlspecialchars($page['firstname'] ?? '') ?> <?= htmlspecialchars($page['lastname'] ?? '') ?>
         </p>
     </div>
 
