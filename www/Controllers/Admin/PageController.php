@@ -35,12 +35,20 @@ class PageController extends Controller
 
             $data = $_POST;
             
+            $data['slug'] = str_replace(' ', '-', $data['slug']);
+            $data['slug'] = urlencode($data['slug']);
+
             $validator = new Validator($data);
             $validator->required('title');
             $validator->min('title', 3);
             $validator->required('slug');
             $validator->min('slug', 3);
             $validator->unique('slug', 'pages', 'slug');
+            
+            if (strlen($data['slug']) > 100) {
+                $validator->addError('slug', "Le slug ne doit pas dépasser 100 caractères.");
+            }
+
             $validator->required('content');
 
             if (!empty($validator->errors())) {
@@ -48,6 +56,7 @@ class PageController extends Controller
                 return;
             }
 
+            $data['user_id'] = $_SESSION['user']['id'];
             $pageModel = new Page();
             if ($pageModel->create($data)) {
                 $this->redirect('/admin/pages');
@@ -70,12 +79,20 @@ class PageController extends Controller
 
             $data = $_POST;
 
+            $data['slug'] = str_replace(' ', '-', $data['slug']);
+            $data['slug'] = urlencode($data['slug']);
+
             $validator = new Validator($data);
             $validator->required('title');
             $validator->min('title', 3);
             $validator->required('slug');
             $validator->min('slug', 3);
             $validator->unique('slug', 'pages', 'slug', $id);
+            
+            if (strlen($data['slug']) > 100) {
+                $validator->addError('slug', "Le slug ne doit pas dépasser 100 caractères.");
+            }
+
             $validator->required('content');
 
             if (!empty($validator->errors())) {

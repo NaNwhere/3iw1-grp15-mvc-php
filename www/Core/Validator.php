@@ -16,6 +16,11 @@ class Validator
         return $this->errors;
     }
 
+    public function addError($field, $message)
+    {
+        $this->errors[$field][] = $message;
+    }
+
     public function required($field)
     {
         if (!isset($this->data[$field]) || trim($this->data[$field]) === '') {

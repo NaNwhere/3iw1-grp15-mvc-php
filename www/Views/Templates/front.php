@@ -54,6 +54,7 @@
                                 <?php if ($_SESSION['user']['role'] === 'admin'): ?>
                                     <a href="/admin" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-indigo-600">Admin Panel</a>
                                 <?php endif; ?>
+                                <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-indigo-600">Mon Profil</a>
                                 <a href="/logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Déconnexion</a>
                             </div>
                         </div>

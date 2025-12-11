@@ -3,12 +3,17 @@
 return [
     // Routes publiques
     '/' => 'MainController@home',
-    '/register' => 'SecurityController@register',
     '/login' => 'SecurityController@login',
     '/logout' => 'SecurityController@logout',
+    '/register' => 'SecurityController@register',
     '/verify' => 'SecurityController@verify',
     '/forgot-password' => 'SecurityController@forgotPassword',
     '/reset-password' => 'SecurityController@resetPassword',
+
+    // Profil
+    '/profile' => 'ProfileController@index',
+    '/profile/update' => 'ProfileController@update',
+    '/profile/delete' => 'ProfileController@delete',
 
     // Routes Admin
     '/admin' => 'Admin\DashboardController@index',

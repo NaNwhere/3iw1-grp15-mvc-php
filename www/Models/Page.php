@@ -14,12 +14,13 @@ class Page extends Model
      */
     public function create(array $data)
     {
-        $sql = "INSERT INTO {$this->table} (title, slug, content) VALUES (:title, :slug, :content)";
+        $sql = "INSERT INTO {$this->table} (title, slug, content, user_id) VALUES (:title, :slug, :content, :user_id)";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             'title' => $data['title'],
             'slug' => $data['slug'],
-            'content' => $data['content']
+            'content' => $data['content'],
+            'user_id' => $data['user_id']
         ]);
     }
 

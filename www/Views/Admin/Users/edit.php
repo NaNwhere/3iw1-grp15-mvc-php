@@ -52,10 +52,13 @@
 
         <div>
             <label for="role" class="block text-sm font-medium text-gray-700">Rôle</label>
-            <select id="role" name="role" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md border">
+            <select id="role" name="role" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md border" <?= ($user['id'] == $_SESSION['user']['id']) ? 'disabled' : '' ?>>
                 <option value="user" <?= (isset($data['role']) && $data['role'] === 'user') ? 'selected' : ($user['role'] === 'user' ? 'selected' : '') ?>>Utilisateur</option>
                 <option value="admin" <?= (isset($data['role']) && $data['role'] === 'admin') ? 'selected' : ($user['role'] === 'admin' ? 'selected' : '') ?>>Administrateur</option>
             </select>
+            <?php if ($user['id'] == $_SESSION['user']['id']): ?>
+                <p class="text-xs text-gray-500 mt-1">Vous ne pouvez pas modifier votre propre rôle.</p>
+            <?php endif; ?>
         </div>
 
         <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">

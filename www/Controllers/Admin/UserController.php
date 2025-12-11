@@ -82,6 +82,10 @@ class UserController extends Controller
             $validator->required('email');
             $validator->email('email');
 
+            if ($id == $_SESSION['user']['id']) {
+                $data['role'] = $_SESSION['user']['role'];
+            }
+
             if (!empty($validator->errors())) {
                 $user = (new User())->find($id);
                 $this->render('Admin/Users/edit', ['user' => $user, 'errors' => $validator->errors(), 'data' => $data]);
@@ -99,6 +103,10 @@ class UserController extends Controller
 
     public function delete($id)
     {
+        if ($id == $_SESSION['user']['id']) {
+            die("Vous ne pouvez pas supprimer votre propre compte.");
+        }
+
         $userModel = new User();
         $userModel->delete($id);
         $this->redirect('/admin/users');
