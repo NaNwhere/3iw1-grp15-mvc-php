@@ -4,7 +4,6 @@ namespace App\Controllers\Admin;
 use App\Core\Controller;
 use App\Models\User;
 use App\Core\Validator;
-use App\Core\Security;
 
 class UserController extends Controller
 {

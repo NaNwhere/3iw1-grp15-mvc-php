@@ -4,7 +4,6 @@ namespace App\Controllers\Admin;
 use App\Core\Controller;
 use App\Models\Page;
 use App\Core\Validator;
-use App\Core\Security;
 
 class PageController extends Controller
 {

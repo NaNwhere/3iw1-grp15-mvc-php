@@ -5,7 +5,6 @@ use App\Core\Controller;
 use App\Models\User;
 use App\Core\Mailer;
 use App\Core\Validator;
-use App\Core\Security;
 
 class SecurityController extends Controller
 {
